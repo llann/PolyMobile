@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">PolyMobile</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="url_home">/polymobile/</string>
+    <string name="url_menu">/polymobile/menus</string>
+    <string name="url_search">/polymobile/search</string>
+    <string name="cookie_session">sessionid</string>
+    <string name="search_hint">Rechercher un utilisateur</string>
+    <string name="search_warning">Utilise le menu pour sélectionner une suggestion !</string>
+    <string name="sugestion_authority">ch.polylan.polymobile.suggestions</string>
+    <string name="nav_header_desc">Navigation header</string>
+</resources>
