@@ -10,4 +10,6 @@
     <string name="search_warning">Utilise le menu pour sélectionner une suggestion !</string>
     <string name="sugestion_authority">ch.polylan.polymobile.suggestions</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_menus">Menus</string>
 </resources>
