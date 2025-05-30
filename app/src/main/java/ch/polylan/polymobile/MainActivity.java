@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String currentUrl;
     private byte[] currentTag = new byte[0];
     private String currentUser;
-    private static final String BASE_URL = "[invalid url, do not cite]
+    private static final String BASE_URL = "https://polylan.ch";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
