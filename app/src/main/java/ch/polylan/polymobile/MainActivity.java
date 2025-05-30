@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String currentUrl;
     private byte[] currentTag = new byte[0];
     private String currentUser;
-    private static final String BASE_URL = "https://polylan.ch";
+    private static final String BASE_URL = "[invalid url, do not cite]
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +117,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            drawerLayout.openDrawer(GravityCompat.START);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
