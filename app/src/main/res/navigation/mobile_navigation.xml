@@ -11,4 +11,8 @@
         android:id="@+id/nav_menus"
         android:name="ch.polylan.polymobile.MenusFragment"
         android:label="@string/menu_menus" />
+    <fragment
+        android:id="@+id/nav_gallery"
+        android:name="ch.polylan.polymobile.ui.gallery.GalleryFragment"
+        android:label="@string/menu_gallery" />
 </navigation>
