@@ -8,32 +8,27 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.CookieManager;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
+    private AppBarConfiguration appBarConfiguration;
     private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-    private ProgressBar progressBar;
-    private WebView webView;
+    private NavController navController;
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
-    private String currentUrl;
-    private byte[] currentTag = new byte[0];
     private String currentUser;
-    private static final String BASE_URL = "https://polylan.ch";
+    private byte[] currentTag = new byte[0];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,31 +36,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-        progressBar = findViewById(R.id.progressBar);
-        webView = findViewById(R.id.webview);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        currentUrl = getString(R.string.url_home);
 
-        // Set up navigation drawer
-        toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
-        navigationView.setNavigationItemSelectedListener(this);
-
-        // Set up WebView
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                String session = getCookie(getString(R.string.cookie_session));
-                if (session != null) {
-                    CookieManager.getInstance().setCookie(BASE_URL + currentUrl, "sessionid=" + session);
-                }
-                progressBar.setVisibility(ProgressBar.GONE);
-            }
-        });
-        webView.getSettings().setJavaScriptEnabled(true);
-        reload();
+        // Set up Navigation Component
+        try {
+            navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            appBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.nav_home, R.id.nav_menus, R.id.nav_gallery, R.id.nav_slideshow)
+                    .setOpenableLayout(drawerLayout)
+                    .build();
+            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+            NavigationUI.setupWithNavController(navigationView, navController);
+        } catch (Exception e) {
+            Toast.makeText(this, "Navigation setup failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
 
         // Set up NFC
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -76,19 +62,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_MUTABLE);
         handleIntent(getIntent());
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.nav_home) {
-            currentUrl = getString(R.string.url_home);
-        } else if (id == R.id.nav_menus) {
-            currentUrl = getString(R.string.url_menu);
-        }
-        reload();
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     @Override
@@ -104,7 +77,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (query != null && !query.isEmpty()) {
                     currentUser = query;
                     currentTag = new byte[0];
-                    reload();
+                    try {
+                        navController.navigate(R.id.nav_home); // Navigate to home for search
+                        // Assume HomeFragment handles search URL
+                    } catch (Exception e) {
+                        Toast.makeText(MainActivity.this, "Search failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(MainActivity.this, getString(R.string.search_warning), Toast.LENGTH_SHORT).show();
                 }
@@ -120,20 +98,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            drawerLayout.openDrawer(GravityCompat.START);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public boolean onSupportNavigateUp() {
+        return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
     }
 
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        } else if (webView.canGoBack()) {
-            webView.goBack();
         } else {
             super.onBackPressed();
         }
@@ -169,20 +141,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (tag != null) {
                 currentTag = tag.getId();
                 currentUser = null;
-                reload();
+                try {
+                    navController.navigate(R.id.nav_home); // Navigate to home for NFC
+                    Toast.makeText(this, "NFC Tag: " + bytesToHex(currentTag), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(this, "NFC handling failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         }
-    }
-
-    private void reload() {
-        String url = BASE_URL + currentUrl;
-        if (currentTag.length > 0) {
-            url += "?card_id=" + bytesToHex(currentTag);
-        } else if (currentUser != null) {
-            url += "?user_id=" + currentUser;
-        }
-        webView.loadUrl(url);
-        progressBar.setVisibility(ProgressBar.VISIBLE);
     }
 
     private String bytesToHex(byte[] bytes) {
@@ -191,18 +157,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             result.append(String.format("%02X", b));
         }
         return result.toString();
-    }
-
-    private String getCookie(String name) {
-        String cookies = CookieManager.getInstance().getCookie(BASE_URL + currentUrl);
-        if (cookies != null) {
-            for (String cookie : cookies.split(";")) {
-                String trimmedCookie = cookie.trim();
-                if (trimmedCookie.startsWith(name + "=")) {
-                    return trimmedCookie.substring(name.length() + 1);
-                }
-            }
-        }
-        return null;
     }
 }
