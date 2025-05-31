@@ -12,7 +12,7 @@ import ch.polylan.polymobile.databinding.FragmentHomeBinding;
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
-    private static final String BASE_URL = "[invalid url, do not cite]";
+    private static final String BASE_URL = "https://polylan.ch";
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);

@@ -12,7 +12,7 @@ import ch.polylan.polymobile.databinding.FragmentSlideshowBinding;
 public class SlideshowFragment extends Fragment {
 
     private FragmentSlideshowBinding binding;
-    private static final String BASE_URL = "[invalid url, do not cite]";
+    private static final String BASE_URL = "https://polylan.ch";
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSlideshowBinding.inflate(inflater, container, false);
