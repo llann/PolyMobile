@@ -18,11 +18,10 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // Access WebView and ProgressBar
         try {
             binding.webview.getSettings().setJavaScriptEnabled(true);
-            binding.webview.getSettings().setDomStorageEnabled(true); // Enable DOM storage
-            binding.webview.getSettings().setCacheMode(android.webkit.WebSettings.LOAD_DEFAULT); // Use cache if offline
+            binding.webview.getSettings().setDomStorageEnabled(true);
+            binding.webview.getSettings().setCacheMode(android.webkit.WebSettings.LOAD_DEFAULT);
             binding.webview.loadUrl(BASE_URL + "/polymobile/");
             binding.webview.setWebViewClient(new android.webkit.WebViewClient() {
                 @Override
@@ -34,10 +33,9 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onReceivedError(android.webkit.WebView view, int errorCode, String description, String failingUrl) {
                     super.onReceivedError(view, errorCode, description, failingUrl);
-                    Toast.makeText(getContext(), "WebView error: " + description + ". Check internet connection.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "WebView error: " + description + ". Check internet.", Toast.LENGTH_LONG).show();
                     binding.progressBar.setVisibility(View.GONE);
-                    // Load offline content or placeholder
-                    view.loadData("<html><body><h2>No Internet</h2><p>Please check your connection and try again.</p></body></html>", "text/html", "UTF-8");
+                    view.loadData("<html><body><h2>No Internet</h2><p>Please check your connection.</p></body></html>", "text/html", "UTF-8");
                 }
             });
         } catch (Exception e) {

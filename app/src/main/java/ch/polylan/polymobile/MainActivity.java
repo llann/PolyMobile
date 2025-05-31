@@ -1,3 +1,5 @@
+package ch.polylan.polymobile;
+
 import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.Intent;
@@ -32,10 +34,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Set up crash handler
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
             Log.e(TAG, "Uncaught exception: " + throwable.getMessage(), throwable);
-            Toast.makeText(MainActivity.this, "App crashed: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "App crashed: " + throwable.getMessage(), Toast.LENGTH_LONG).show();
             finish();
         });
 
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
             MaterialToolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
 
-            // Set up Navigation Component
             Log.d(TAG, "Setting up Navigation Component");
             navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             appBarConfiguration = new AppBarConfiguration.Builder(
@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Navigation setup failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
-        // Set up NFC
         Log.d(TAG, "Setting up NFC");
         try {
             nfcAdapter = NfcAdapter.getDefaultAdapter(this);
