@@ -14,11 +14,11 @@ public class SlideshowFragment extends Fragment {
     private FragmentSlideshowBinding binding;
     private static final String BASE_URL = "https://polylan.ch";
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSlideshowBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // Access WebView and ProgressBar
         try {
             binding.webview.getSettings().setJavaScriptEnabled(true);
             binding.webview.getSettings().setDomStorageEnabled(true);
@@ -34,9 +34,9 @@ public class SlideshowFragment extends Fragment {
                 @Override
                 public void onReceivedError(android.webkit.WebView view, int errorCode, String description, String failingUrl) {
                     super.onReceivedError(view, errorCode, description, failingUrl);
-                    Toast.makeText(getContext(), "WebView error: " + description + ". Check internet connection.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "WebView error: " + description + ". Check internet.", Toast.LENGTH_LONG).show();
                     binding.progressBar.setVisibility(View.GONE);
-                    view.loadData("<html><body><h2>No Internet</h2><p>Please check your connection and try again.</p></body></html>", "text/html", "UTF-8");
+                    view.loadData("<html><body><h2>No Internet</h2><p>Please check your connection.</p></body></html>", "text/html", "UTF-8");
                 }
             });
         } catch (Exception e) {

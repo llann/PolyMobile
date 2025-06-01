@@ -14,6 +14,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private static final String BASE_URL = "https://polylan.ch";
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
